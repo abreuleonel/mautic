@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * @copyright   2016 Mautic Contributors. All rights reserved
  * @author      Mautic
  *
@@ -31,6 +32,15 @@ return [
                     'mautic.page.model.trackable',
                     'mautic.page.helper.token',
                     'mautic.asset.helper.token',
+                ],
+            ],
+            'mautic.sms.channel.subscriber' => [
+                'class' => \Mautic\SmsBundle\EventListener\ChannelSubscriber::class,
+            ],
+            'mautic.sms.stats.subscriber' => [
+                'class'     => \Mautic\SmsBundle\EventListener\StatsSubscriber::class,
+                'arguments' => [
+                    'doctrine.orm.entity_manager',
                 ],
             ],
         ],
@@ -68,18 +78,19 @@ return [
                 'alias' => 'sms_helper',
             ],
         ],
-        'other' => [
-            'mautic.sms.api' => [
-                'class'     => 'Mautic\SmsBundle\Api\TwilioApi',
-                'arguments' => [
-                    'mautic.page.model.trackable',
-                    'mautic.twilio.service',
-                    'mautic.helper.phone_number',
-                    '%mautic.sms_sending_phone_number%',
-                    'monolog.logger.mautic',
-                ],
-                'alias' => 'sms_api',
-            ],
+    		
+    	'other' => [ 
+    		'mautic.sms.api' => [ 
+    				'class' => 'Mautic\SmsBundle\Api\SmsmantraApi', 
+    				'arguments' => [ 
+    						'mautic.page.model.trackable',
+    						'mautic.factory', 
+    						'mautic.twilio.service', 
+    						'mautic.helper.phone_number', 
+    						'%mautic.sms_sending_phone_number%' 
+    				], 
+    				'alias' => 'sms_api'
+    		],
             'mautic.twilio.service' => [
                 'class'     => 'Services_Twilio',
                 'arguments' => [
@@ -117,6 +128,14 @@ return [
             'mautic_receive_sms' => [
                 'path'       => '/sms/receive',
                 'controller' => 'MauticSmsBundle:Api\SmsApi:receive',
+            ],
+        ],
+        'api' => [
+            'mautic_api_smsesstandard' => [
+                'standard_entity' => true,
+                'name'            => 'smses',
+                'path'            => '/smses',
+                'controller'      => 'MauticSmsBundle:Api\SmsApi',
             ],
         ],
     ],
